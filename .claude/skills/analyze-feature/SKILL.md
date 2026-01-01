@@ -1,10 +1,9 @@
 ---
-name: analysis
+name: analyze-feature
 description: "Turn ideas into fully formed designs and specs through natural collaborative dialogue. Use when planning new features, designing architecture, or making significant changes to the codebase."
-allowed-tools: Read, Write, Grep, Glob, Bash, TodoWrite, AskUserQuestion
 ---
 
-# Analysis Skill
+# Analyze Feature
 
 Help turn ideas into fully formed designs and specs through natural collaborative dialogue. Start by understanding the current project context, then ask questions one at a time to refine the idea. Once you understand what you're building, present the design in small sections (200-300 words), checking after each section whether it looks right so far.
 
@@ -27,7 +26,7 @@ Help turn ideas into fully formed designs and specs through natural collaborativ
 ### Presenting the design
 
 - Once you believe you understand what you're building, present the design
-- Break it into sections of 200-300 words
+- Break it into sections of 300-500 words
 - Ask after each section whether it looks right so far
 - Cover: architecture, components, data flow, error handling, testing
 - Be ready to go back and clarify if something doesn't make sense

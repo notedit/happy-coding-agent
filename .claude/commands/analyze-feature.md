@@ -20,6 +20,6 @@ Initial request: $ARGUMENTS
 
 ---
 
-## Phase 2: Run with Analysis Skill
+## Phase 2: Run with Analyze Feature Skill
 
-Follow the analysis process defined in @.claude/skills/analysis/SKILL.md
+Use the Skill tool to invoke the "analyze-feature" skill and follow its complete process.

@@ -2,7 +2,7 @@
 
 ## Skills
 
-### /hc:analysis
+### /analyze-feature
 Turn ideas into fully formed designs and specs through natural collaborative dialogue.
 
-See: `.claude/skills/analysis/SKILL.md`
+See: `.claude/skills/analyze-feature/SKILL.md`
