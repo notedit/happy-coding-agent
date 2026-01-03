@@ -102,37 +102,3 @@ cli/                                     # CLI tool (hca command)
     ├── screenshot-feature-extractor/
     └── skill-creation-guide/
 ```
-
-## Screenshot Analysis Architecture
-
-The `/screenshot-analyzer` command uses a multi-agent pipeline for comprehensive analysis:
-
-```
-                    ┌─────────────────┐
-                    │   Coordinator   │
-                    └────────┬────────┘
-                             │
-         ┌───────────────────┼───────────────────┐
-         │                   │                   │
-         ▼                   ▼                   ▼
-┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐
-│  UI Analyzer    │ │  Interaction    │ │   Business      │
-│  (parallel)     │ │   Analyzer      │ │    Analyzer     │
-└────────┬────────┘ └────────┬────────┘ └────────┬────────┘
-         │                   │                   │
-         └───────────────────┼───────────────────┘
-                             ▼
-                    ┌─────────────────┐
-                    │   Synthesizer   │
-                    └────────┬────────┘
-                             ▼
-                    ┌─────────────────┐
-                    │    Reviewer     │
-                    └─────────────────┘
-```
-
-**Benefits:**
-- **Thoroughness** - Three specialized perspectives catch more details
-- **Speed** - Parallel analysis reduces total time
-- **Quality** - Synthesis + Review ensures coherent output
-- **Specialization** - Each agent focuses on its domain expertise
