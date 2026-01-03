@@ -5,7 +5,7 @@ description: "Analyze product screenshots to extract feature lists and generate 
 
 # Screenshot Analyzer
 
-Extract product features from UI screenshots and generate structured development task lists.
+Extract product features from UI screenshots and generate structured development task lists. using ultrathink. 
 
 **Core principle**: Describe WHAT to build (features/interactions), NOT HOW (no tech stack).
 

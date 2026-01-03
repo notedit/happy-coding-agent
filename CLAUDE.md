@@ -2,7 +2,12 @@
 
 ## Skills
 
-### /analyze-feature
+### /feature-analyzer
 Turn ideas into fully formed designs and specs through natural collaborative dialogue.
 
-See: `.claude/skills/analyze-feature/SKILL.md`
+See: `.claude/skills/feature-analyzer/SKILL.md`
+
+### /feature-pipeline
+Execute implementation tasks from design documents using markdown checkboxes.
+
+See: `.claude/skills/feature-pipeline/SKILL.md`
