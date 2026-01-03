@@ -1,11 +1,11 @@
 ---
-name: analyze-feature
+name: feature-analyzer
 description: "Turn ideas into fully formed designs and specs through natural collaborative dialogue. Use when planning new features, designing architecture, or making significant changes to the codebase."
 ---
 
-# Analyze Feature
+# Feature Analyzer
 
-Help turn ideas into fully formed designs and specs through natural collaborative dialogue. Start by understanding the current project context, then ask questions one at a time to refine the idea. Once you understand what you're building, present the design in small sections (200-300 words), checking after each section whether it looks right so far.
+Help turn ideas into fully formed designs and specs through natural collaborative dialogue. Start by understanding the current project context, then ask questions one at a time to refine the idea. Once you understand what you're building, present the design in small sections (200-300 words), checking after each section whether it looks right so far.  using ultrathink. 
 
 ## The Process
 
@@ -35,13 +35,47 @@ Help turn ideas into fully formed designs and specs through natural collaborativ
 
 ### Documentation
 
-- Write the validated design to `docs/plans/YYYY-MM-DD-<topic>-design.md`
+- Write the validated design to `docs/designs/YYYY-MM-DD-<topic>-design.md`
 - Commit the design document to git
+
+### Implementation Tasks
+
+After presenting the design, generate an implementation task list using markdown checkboxes:
+
+```markdown
+## Implementation Tasks
+
+- [ ] **Task Title** `priority:1` `phase:model`
+  - files: file1.py, file2.py
+  - [ ] Acceptance criterion 1
+  - [ ] Acceptance criterion 2
+
+- [ ] **Another Task** `priority:2` `phase:api` `deps:Task Title`
+  - files: api.py
+  - [ ] Criterion 1
+  - [ ] Criterion 2
+```
+
+**Task Format:**
+- `- [ ]` checkbox with **bold title**
+- Inline attributes: `priority:N` `phase:X` `deps:A,B`
+- Indented `- files:` line with comma-separated paths
+- Indented `- [ ]` checkboxes for acceptance criteria
+
+**Task Generation Guidelines:**
+- Break the design into atomic, implementable tasks
+- Order tasks by dependency (foundations first)
+- Use clear, action-oriented titles ("Create X", "Implement Y", "Add Z")
+- Each task should be completable independently
+- Include test tasks for each major component
+- Phases: `model` → `api` → `ui` → `test` → `docs`
 
 ### Implementation (if continuing)
 
-- Ask: "Ready to set up for implementation?"
-- Create detailed implementation plan if user agrees
+- Ask: "设计已完成，要开始实现吗？"
+- If user says "开始实现" / "Yes" / "start implementation":
+  - Invoke `/feature-pipeline <design-file-path>`
+  - Or directly start executing tasks from the design document
 
 ## Key Principles
 
