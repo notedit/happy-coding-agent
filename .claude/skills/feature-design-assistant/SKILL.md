@@ -5,33 +5,67 @@ description: "Turn ideas into fully formed designs and specs through natural col
 
 # Feature Analyzer
 
-Help turn ideas into fully formed designs and specs through natural collaborative dialogue. Start by understanding the current project context, then ask questions one at a time to refine the idea. Once you understand what you're building, present the design in small sections (200-300 words), checking after each section whether it looks right so far.
+Help turn ideas into fully formed designs and specs through natural collaborative dialogue. Use AskUserQuestion to efficiently gather requirements in batches of up to 4 questions at a time.
 
-**Announce at start:** "I'm using the feature-design-assistant skill to design this feature." 
+**Announce at start:** "I'm using the feature-design-assistant skill to design this feature."
 
 ## The Process
 
-### Understanding the idea
+### Phase 1: Context Discovery
 
-- Check out the current project state first (files, docs, recent commits)
-- Ask questions one at a time to refine the idea
-- Prefer multiple choice questions when possible, but open-ended is fine too
-- Only one question per message - if a topic needs more exploration, break it into multiple questions
-- Focus on understanding: purpose, constraints, success criteria
+First, check out the current project state (files, docs, recent commits), then use AskUserQuestion to gather initial context:
 
-### Exploring approaches
+```
+AskUserQuestion with questions:
+1. "这个功能要解决什么问题？" (open-ended)
+2. "目标用户是谁？" options: ["开发者", "终端用户", "管理员", "API消费者", "其他"] multiSelect: true
+3. "有哪些核心需求？" options: ["性能优先", "易用性优先", "安全性优先", "可扩展性优先", "快速交付"] multiSelect: true
+4. "有时间或资源限制吗？" options: ["紧急(1-2天)", "正常(1周)", "宽松(2周+)", "无限制"]
+```
 
-- Propose 2-3 different approaches with trade-offs
-- Present options conversationally with your recommendation and reasoning
-- Lead with your recommended option and explain why
+### Phase 2: Technical Requirements
 
-### Presenting the design
+Based on Phase 1 answers, ask technical questions:
 
-- Once you believe you understand what you're building, present the design
-- Break it into sections of 300-500 words
-- Ask after each section whether it looks right so far
-- Cover: architecture, components, data flow, error handling, testing
-- Be ready to go back and clarify if something doesn't make sense
+```
+AskUserQuestion with questions:
+1. "需要哪些技术能力？" options: ["数据持久化", "API接口", "用户界面", "后台任务", "第三方集成", "无特殊要求"] multiSelect: true
+2. "数据存储需求？" options: ["数据库", "文件系统", "缓存", "内存", "无需存储"]
+3. "需要支持哪些场景？" options: ["高并发", "大数据量", "离线使用", "实时同步", "普通使用"] multiSelect: true
+4. "错误处理策略？" options: ["静默重试", "用户提示", "自动回滚", "日志记录", "告警通知"] multiSelect: true
+```
+
+### Phase 3: Architecture Exploration
+
+Propose 2-3 different approaches, then ask:
+
+```
+AskUserQuestion with questions:
+1. "倾向哪种架构方案？" options: ["方案A: [简述]", "方案B: [简述]", "方案C: [简述]", "需要更多信息"]
+2. "哪些非功能性需求重要？" options: ["可测试性", "可维护性", "可观测性", "向后兼容", "文档完整"] multiSelect: true
+3. "部署和运维考虑？" options: ["容器化", "CI/CD", "监控告警", "蓝绿发布", "无特殊要求"] multiSelect: true
+4. "还有其他约束或偏好吗？" (open-ended)
+```
+
+### Phase 4: Design Validation
+
+Present design in sections (300-500 words each), after each section ask:
+
+```
+AskUserQuestion with questions:
+1. "这部分设计是否符合预期？" options: ["完全符合", "基本符合，有小建议", "需要调整", "完全不对"]
+2. "需要补充哪些细节？" options: ["更多代码示例", "更详细的数据流", "边界情况处理", "性能考量", "暂时够了"] multiSelect: true
+3. "这部分有疑问吗？" (open-ended)
+4. "准备好看下一部分了吗？" options: ["继续", "先修改当前部分", "回到上一部分"]
+```
+
+## AskUserQuestion Usage Guidelines
+
+- **每次最多 4 个问题** - 工具上限
+- **非互斥选项用 multiSelect: true** - 如技术能力、非功能需求等
+- **互斥选项不用 multiSelect** - 如架构方案选择、时间限制等
+- **保留一个开放式问题** - 捕获遗漏的需求
+- **问题要具体** - 避免模糊的选项
 
 ## After the Design
 
@@ -106,8 +140,9 @@ After saving the design, offer execution choice:
 
 ## Key Principles
 
-- **One question at a time** - Don't overwhelm with multiple questions
-- **Multiple choice preferred** - Easier to answer than open-ended when possible
+- **Batch questions efficiently** - Use AskUserQuestion with up to 4 related questions per call
+- **Use multiSelect wisely** - For non-mutually-exclusive options (e.g., features, requirements)
+- **Keep one open-ended question** - Catch edge cases and unexpected requirements
 - **YAGNI ruthlessly** - Remove unnecessary features from all designs
 - **Explore alternatives** - Always propose 2-3 approaches before settling
 - **Incremental validation** - Present design in sections, validate each
