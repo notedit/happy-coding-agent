@@ -2,653 +2,572 @@
 
 ## 一、概述
 
-本文档为 `happy-coding-agent` 项目提供一个标准化的 Claude Code 插件组织方案。该方案基于 Claude Code 的官方扩展机制，结合业界最佳实践，提供清晰的目录结构、组件规范和工作流程。
+本文档为 `happy-coding-agent` 项目提供一个标准化的 Claude Code 插件组织方案。该方案**严格遵循 Claude Code 官方插件规范**，支持官方安装命令和 Marketplace 分发。
 
-## 二、核心概念
+## 二、官方安装方式
 
-### 2.1 Claude Code 扩展机制
+### 2.1 安装命令
 
-Claude Code 支持三种主要的扩展类型：
+```bash
+# 方式1: 从 GitHub 直接安装
+/plugin install https://github.com/notedit/happy-coding-agent
 
-| 类型 | 目录 | 用途 | 触发方式 |
-|------|------|------|----------|
-| **Commands** | `.claude/commands/` | 斜杠命令，用户主动调用 | `/command-name` |
-| **Agents** | `.claude/agents/` | 子代理，处理特定类型的任务 | Task 工具自动调度 |
-| **Skills** | `.claude/skills/` | 可复用的专业能力包 | Skill 工具调用 |
+# 方式2: 从 Marketplace 安装 (需先注册)
+/plugin install happy-coding-agent@claude-plugin-directory
 
-### 2.2 本项目的双重角色
+# 方式3: 从自定义 Marketplace 安装
+/plugin marketplace add notedit/plugins
+/plugin install happy-coding-agent@notedit
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                   happy-coding-agent                             │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  ┌──────────────────────┐    ┌───────────────────────────────┐  │
-│  │   Plugin Package     │    │      Distribution CLI         │  │
-│  │   (.claude/)         │    │      (hca command)            │  │
-│  │                      │    │                               │  │
-│  │  • agents/           │    │  • init - 部署插件            │  │
-│  │  • commands/         │───▶│  • update - 更新插件          │  │
-│  │  • skills/           │    │  • status - 查看状态          │  │
-│  │                      │    │  • package - 打包发布         │  │
-│  └──────────────────────┘    └───────────────────────────────┘  │
-│                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+# 方式4: 本地路径安装
+/plugin install ./path/to/happy-coding-agent
+
+# 方式5: 可视化安装
+/plugin  → 选择 "Discover" 浏览和安装
 ```
 
-## 三、推荐的目录结构
+### 2.2 安装位置
+
+| 位置 | 路径 | 作用域 |
+|------|------|--------|
+| 全局 | `~/.claude/skills/` | 所有项目可用 |
+| 项目级 | `./.claude/skills/` | 仅当前项目，可提交到 Git |
+| 插件包 | `.claude-plugin/` | 完整插件分发 |
+
+## 三、官方插件目录结构
 
 ### 3.1 完整目录结构
 
 ```
 happy-coding-agent/
 │
-├── 📄 CLAUDE.md                    # 项目级 Claude 指令
-├── 📄 README.md                    # 项目说明文档
-├── 📄 LICENSE                      # 开源许可证
-├── 📄 pyproject.toml               # Python 包配置
-├── 📄 manifest.json                # [新增] 插件清单文件
+├── 📄 README.md                      # 项目说明 (Marketplace 展示)
+├── 📄 LICENSE                        # 开源许可证
 │
-├── 📁 .claude/                     # Claude Code 插件核心目录
-│   │
-│   ├── 📄 settings.json            # [新增] 插件默认设置
-│   │
-│   ├── 📁 agents/                  # 子代理定义
-│   │   ├── 📄 _index.json          # [新增] 代理索引和分类
-│   │   │
-│   │   ├── 📁 code/                # [新增] 代码分析类代理
-│   │   │   ├── 📄 code-architect.md
-│   │   │   ├── 📄 code-explorer.md
-│   │   │   └── 📄 code-reviewer.md
-│   │   │
-│   │   ├── 📁 screenshot/          # [新增] 截图分析类代理
-│   │   │   ├── 📄 ui-analyzer.md
-│   │   │   ├── 📄 interaction-analyzer.md
-│   │   │   ├── 📄 business-analyzer.md
-│   │   │   ├── 📄 synthesizer.md
-│   │   │   └── 📄 reviewer.md
-│   │   │
-│   │   └── 📁 test/                # [新增] 测试类代理
-│   │       ├── 📄 test-generator.md
-│   │       └── 📄 test-runner.md
-│   │
-│   ├── 📁 commands/                # 斜杠命令
-│   │   ├── 📄 _index.json          # [新增] 命令索引
-│   │   ├── 📄 feature-analyzer.md
-│   │   ├── 📄 feature-pipeline.md
-│   │   ├── 📄 feature-dev.md
-│   │   └── 📄 screenshot-analyzer.md
-│   │
-│   ├── 📁 skills/                  # 技能包
-│   │   ├── 📄 _index.json          # [新增] 技能索引
-│   │   │
-│   │   ├── 📁 feature-design-assistant/
-│   │   │   ├── 📄 SKILL.md         # 技能主文件 (必需)
-│   │   │   ├── 📁 references/      # 参考文档
-│   │   │   ├── 📁 scripts/         # 可执行脚本
-│   │   │   └── 📁 assets/          # 资产文件
-│   │   │
-│   │   ├── 📁 task-execution-engine/
-│   │   │   └── ...
-│   │   │
-│   │   ├── 📁 screenshot-feature-extractor/
-│   │   │   └── ...
-│   │   │
-│   │   └── 📁 skill-creation-guide/
-│   │       └── ...
-│   │
-│   └── 📁 .hca/                    # [保留] 元数据目录
-│       └── 📄 metadata.json
+├── 📁 .claude-plugin/                # [核心] 插件元数据目录
+│   ├── 📄 plugin.json                # [必需] 插件清单
+│   └── 📄 marketplace.json           # [可选] Marketplace 发布配置
 │
-├── 📁 cli/                         # CLI 工具源码
-│   ├── 📄 __init__.py
-│   ├── 📄 main.py
+├── 📁 skills/                        # [核心] 技能目录
+│   ├── 📁 feature-design-assistant/
+│   │   ├── 📄 SKILL.md               # 技能主文件 (必需)
+│   │   ├── 📁 references/            # 参考文档
+│   │   ├── 📁 scripts/               # 可执行脚本
+│   │   └── 📁 assets/                # 资产文件
 │   │
-│   ├── 📁 commands/                # CLI 命令
-│   │   ├── 📄 __init__.py
-│   │   ├── 📄 init.py
-│   │   ├── 📄 update.py
-│   │   ├── 📄 status.py
-│   │   ├── 📄 package.py           # [新增] 打包命令
-│   │   ├── 📄 validate.py          # [新增] 验证命令
-│   │   └── 📄 list.py              # [新增] 列表命令
+│   ├── 📁 task-execution-engine/
+│   │   └── ...
 │   │
-│   └── 📁 core/                    # 核心逻辑
-│       ├── 📄 __init__.py
-│       ├── 📄 config.py
-│       ├── 📄 deployer.py
-│       ├── 📄 git_ops.py
-│       ├── 📄 validator.py         # [新增] 验证器
-│       ├── 📄 packager.py          # [新增] 打包器
-│       └── 📄 manifest.py          # [新增] 清单解析器
-│
-├── 📁 tests/                       # 测试目录
-│   ├── 📄 conftest.py
-│   ├── 📄 test_init_modes.py
-│   ├── 📄 test_deployer.py         # [新增]
-│   ├── 📄 test_validator.py        # [新增]
-│   └── 📁 fixtures/                # [新增] 测试固件
+│   ├── 📁 screenshot-feature-extractor/
+│   │   └── ...
+│   │
+│   └── 📁 skill-creation-guide/
 │       └── ...
 │
-├── 📁 docs/                        # [新增] 文档目录
-│   ├── 📄 PLUGIN_ARCHITECTURE_DESIGN.md  # 本文档
-│   ├── 📄 CONTRIBUTING.md          # 贡献指南
-│   ├── 📄 COMPONENT_SPEC.md        # 组件规范
-│   └── 📄 CHANGELOG.md             # 变更日志
+├── 📁 commands/                      # [核心] 斜杠命令目录
+│   ├── 📄 feature-analyzer.md
+│   ├── 📄 feature-pipeline.md
+│   ├── 📄 feature-dev.md
+│   └── 📄 screenshot-analyzer.md
 │
-└── 📁 scripts/                     # [新增] 开发脚本
-    ├── 📄 build.sh
-    ├── 📄 release.sh
-    └── 📄 validate-all.sh
+├── 📁 agents/                        # [核心] 子代理目录
+│   ├── 📄 code-architect.md
+│   ├── 📄 code-explorer.md
+│   ├── 📄 code-reviewer.md
+│   ├── 📄 screenshot-ui-analyzer.md
+│   ├── 📄 screenshot-interaction-analyzer.md
+│   ├── 📄 screenshot-business-analyzer.md
+│   ├── 📄 screenshot-synthesizer.md
+│   ├── 📄 screenshot-reviewer.md
+│   ├── 📄 test-generator.md
+│   └── 📄 test-runner.md
+│
+├── 📁 hooks/                         # [可选] 事件钩子
+│   └── 📄 post-install.sh
+│
+├── 📄 .mcp.json                      # [可选] MCP 服务器配置
+│
+├── 📄 CLAUDE.md                      # 项目级 Claude 指令 (用于开发)
+├── 📄 pyproject.toml                 # Python 包配置 (CLI 工具)
+│
+├── 📁 cli/                           # [辅助] CLI 工具 (可选分发方式)
+│   └── ...
+│
+└── 📁 docs/                          # 文档目录
+    └── ...
 ```
 
-### 3.2 目录职责说明
+### 3.2 与当前结构对比
 
-| 目录 | 职责 | 重要性 |
-|------|------|--------|
-| `.claude/` | Claude Code 插件内容，部署到目标项目 | 核心 |
-| `cli/` | CLI 工具，用于分发和管理插件 | 核心 |
-| `docs/` | 项目文档，开发者参考 | 重要 |
-| `tests/` | 自动化测试，质量保证 | 重要 |
-| `scripts/` | 开发和发布脚本 | 辅助 |
+| 当前结构 | 官方结构 | 变更说明 |
+|----------|----------|----------|
+| `.claude/agents/` | `agents/` | 移到根目录 |
+| `.claude/commands/` | `commands/` | 移到根目录 |
+| `.claude/skills/` | `skills/` | 移到根目录 |
+| `manifest.json` | `.claude-plugin/plugin.json` | 使用官方格式 |
+| - | `.claude-plugin/marketplace.json` | 新增 Marketplace 配置 |
 
-## 四、核心文件规范
+## 四、核心配置文件
 
-### 4.1 manifest.json - 插件清单
+### 4.1 plugin.json - 插件清单 (必需)
 
 ```json
 {
-  "$schema": "https://claude.ai/schemas/plugin-manifest-v1.json",
   "name": "happy-coding-agent",
   "version": "1.0.0",
   "description": "A collection of Claude Code skills, commands, and agents for rapid product development",
-  "author": "notedit",
+  "author": {
+    "name": "notedit",
+    "url": "https://github.com/notedit"
+  },
   "license": "MIT",
-  "repository": "https://github.com/notedit/happy-coding-agent",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/notedit/happy-coding-agent"
+  },
+  "homepage": "https://github.com/notedit/happy-coding-agent",
 
   "claude_code": {
-    "min_version": "1.0.0",
-    "features": ["agents", "commands", "skills"]
+    "min_version": "1.0.0"
   },
 
   "components": {
-    "agents": {
-      "code": {
-        "description": "Code analysis and architecture agents",
-        "items": ["code-architect", "code-explorer", "code-reviewer"]
-      },
-      "screenshot": {
-        "description": "Screenshot analysis multi-agent pipeline",
-        "items": ["ui-analyzer", "interaction-analyzer", "business-analyzer", "synthesizer", "reviewer"]
-      },
-      "test": {
-        "description": "Testing automation agents",
-        "items": ["test-generator", "test-runner"]
-      }
-    },
-    "commands": {
-      "items": ["feature-analyzer", "feature-pipeline", "feature-dev", "screenshot-analyzer"]
-    },
-    "skills": {
-      "items": ["feature-design-assistant", "task-execution-engine", "screenshot-feature-extractor", "skill-creation-guide"]
-    }
+    "skills": [
+      "feature-design-assistant",
+      "task-execution-engine",
+      "screenshot-feature-extractor",
+      "skill-creation-guide"
+    ],
+    "commands": [
+      "feature-analyzer",
+      "feature-pipeline",
+      "feature-dev",
+      "screenshot-analyzer"
+    ],
+    "agents": [
+      "code-architect",
+      "code-explorer",
+      "code-reviewer",
+      "screenshot-ui-analyzer",
+      "screenshot-interaction-analyzer",
+      "screenshot-business-analyzer",
+      "screenshot-synthesizer",
+      "screenshot-reviewer",
+      "test-generator",
+      "test-runner"
+    ]
   },
 
-  "dependencies": {
-    "python": ">=3.8",
-    "packages": ["click>=8.0", "rich>=13.0"]
-  },
+  "keywords": [
+    "development",
+    "productivity",
+    "code-review",
+    "architecture",
+    "feature-design",
+    "testing"
+  ],
 
-  "tags": ["development", "productivity", "code-review", "architecture"]
+  "categories": [
+    "Development Tools",
+    "Productivity",
+    "Code Quality"
+  ]
 }
 ```
 
-### 4.2 Agent 文件规范
+### 4.2 marketplace.json - Marketplace 发布配置 (可选)
 
-```yaml
-# .claude/agents/{category}/{agent-name}.md
+```json
+{
+  "listing": {
+    "title": "Happy Coding Agent",
+    "tagline": "Rapid product development with AI-powered workflows",
+    "description": "A comprehensive collection of skills, commands, and agents that accelerate software development through intelligent automation.",
+    "icon": "assets/icon.png",
+    "screenshots": [
+      "assets/screenshots/feature-analyzer.png",
+      "assets/screenshots/code-review.png"
+    ]
+  },
 
----
-# === 必需字段 ===
-name: agent-name                  # 代理标识符 (kebab-case)
-description: |                    # 详细描述 (用于调度决策)
-  First sentence is the summary.
-  Following sentences provide more detail about capabilities.
+  "pricing": {
+    "type": "free"
+  },
 
-# === 可选字段 ===
-tools: Glob, Grep, Read, Edit    # 允许使用的工具
-model: opus | sonnet | haiku     # 推荐模型
-color: green | blue | yellow     # UI 颜色标识
----
+  "support": {
+    "documentation": "https://github.com/notedit/happy-coding-agent#readme",
+    "issues": "https://github.com/notedit/happy-coding-agent/issues",
+    "email": "support@example.com"
+  },
 
-# Agent Instructions
-
-## Core Responsibilities
-- Responsibility 1
-- Responsibility 2
-
-## Process
-1. Step one
-2. Step two
-
-## Output Format
-Describe expected output...
+  "verification": {
+    "verified": false,
+    "trust_level": "community"
+  }
+}
 ```
 
-### 4.3 Command 文件规范
+### 4.3 团队分发配置 (.claude/settings.json)
+
+项目中添加此文件，团队成员克隆后自动安装插件：
+
+```json
+{
+  "plugins": {
+    "sources": [
+      {
+        "type": "github",
+        "url": "https://github.com/notedit/happy-coding-agent"
+      }
+    ],
+    "auto_install": true
+  },
+
+  "marketplaces": [
+    {
+      "name": "notedit",
+      "url": "https://github.com/notedit/plugins"
+    }
+  ]
+}
+```
+
+## 五、组件文件规范
+
+### 5.1 Skill 文件规范 (SKILL.md)
 
 ```yaml
-# .claude/commands/{command-name}.md
-
 ---
-# === 必需字段 ===
-description: "One-line description for command list"
-
-# === 可选字段 ===
-argument-hint: "Placeholder text for arguments"
-allowed-tools: Read, Write, Glob, Grep, Bash
+name: feature-design-assistant
+description: |
+  Feature design through incremental Q&A and validation.
+  Use when: (1) Planning new features, (2) Designing architecture,
+  (3) Creating implementation specs, (4) Breaking down complex requirements.
+license: MIT
 ---
 
-## Phase 1: Setup
-Instructions for phase 1...
+# Feature Design Assistant
 
-## Phase 2: Execution
-Instructions for phase 2...
+## Overview
+Brief description of the skill...
+
+## Workflow
+1. Discovery - Understand requirements
+2. Analysis - Explore codebase
+3. Design - Create architecture
+4. Validation - Review with user
+
+## Bundled Resources
+
+### References
+- `references/design-patterns.md` - Common design patterns
+
+### Scripts
+- `scripts/generate-spec.py` - Generate specification document
+
+## Usage Examples
+Example usage scenarios...
+```
+
+### 5.2 Command 文件规范
+
+```yaml
+---
+description: "Turn ideas into fully formed designs and specs through collaborative dialogue"
+argument-hint: "Optional feature description"
+allowed-tools: Read, Write, Glob, Grep, Bash, TodoWrite, Task, Skill
+---
+
+## Phase 1: Discovery
+Understand user requirements...
+
+## Phase 2: Analysis
+Explore codebase...
+
+## Phase 3: Design
+Create implementation plan...
 
 ## Variables
 - $ARGUMENTS - User-provided arguments
 ```
 
-### 4.4 Skill 文件规范
+### 5.3 Agent 文件规范
 
 ```yaml
-# .claude/skills/{skill-name}/SKILL.md
-
 ---
-# === 必需字段 ===
-name: skill-name
+name: code-architect
 description: |
-  What the skill does.
-  When to use this skill: (1) scenario one, (2) scenario two.
-
-# === 可选字段 ===
-license: MIT | See LICENSE.txt
+  Designs feature architectures by analyzing existing codebase patterns
+  and conventions, then providing comprehensive implementation blueprints.
+tools: Glob, Grep, Read, WebFetch, TodoWrite
+model: opus
+color: green
 ---
 
-# Skill Name
+# Code Architect Agent
 
-## Overview
-Brief overview...
+## Core Responsibilities
+- Analyze codebase patterns
+- Design feature architecture
+- Create implementation blueprints
 
-## Core Workflow
-1. Step one
-2. Step two
+## Process
+1. Pattern analysis
+2. Architecture design
+3. Blueprint generation
 
-## Bundled Resources
-
-### Scripts
-- `scripts/script1.py` - Description
-
-### References
-- `references/ref1.md` - Description
-
-## Usage Examples
-Example 1...
+## Output Format
+Structured architecture document...
 ```
 
-### 4.5 索引文件规范
+## 六、安装流程详解
+
+### 6.1 用户安装流程
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    Plugin Installation Flow                      │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  1. User runs: /plugin install <source>                         │
+│                     │                                            │
+│                     ▼                                            │
+│  2. Claude Code fetches plugin from source                      │
+│     - GitHub URL → Clone repository                             │
+│     - Marketplace → Download package                            │
+│     - Local path → Read directory                               │
+│                     │                                            │
+│                     ▼                                            │
+│  3. Validate .claude-plugin/plugin.json                         │
+│     - Check required fields                                     │
+│     - Verify component paths                                    │
+│                     │                                            │
+│                     ▼                                            │
+│  4. User reviews source code (security check)                   │
+│     - MCP servers may have file system access                   │
+│     - User must approve installation                            │
+│                     │                                            │
+│                     ▼                                            │
+│  5. Copy components to target location                          │
+│     - skills/ → ~/.claude/skills/ or ./.claude/skills/          │
+│     - commands/ → ~/.claude/commands/                           │
+│     - agents/ → ~/.claude/agents/                               │
+│                     │                                            │
+│                     ▼                                            │
+│  6. Run post-install hooks (if any)                             │
+│                     │                                            │
+│                     ▼                                            │
+│  7. Plugin ready to use                                         │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### 6.2 团队自动安装流程
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                  Team Auto-Install Flow                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  1. Developer clones project with .claude/settings.json         │
+│                     │                                            │
+│                     ▼                                            │
+│  2. Claude Code detects plugin configuration                    │
+│                     │                                            │
+│                     ▼                                            │
+│  3. Prompt: "This project requires plugins. Install?"           │
+│                     │                                            │
+│                     ▼                                            │
+│  4. Auto-install plugins from configured sources                │
+│                     │                                            │
+│                     ▼                                            │
+│  5. Team has consistent tooling                                 │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+## 七、迁移计划
+
+### 7.1 从当前结构迁移
+
+```bash
+# Step 1: 创建官方插件结构
+mkdir -p .claude-plugin
+
+# Step 2: 移动组件目录到根目录
+mv .claude/agents ./agents
+mv .claude/commands ./commands
+mv .claude/skills ./skills
+
+# Step 3: 创建 plugin.json
+cat > .claude-plugin/plugin.json << 'EOF'
+{
+  "name": "happy-coding-agent",
+  "version": "1.0.0",
+  "description": "A collection of Claude Code skills, commands, and agents for rapid product development",
+  "author": { "name": "notedit" },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/notedit/happy-coding-agent"
+  },
+  "claude_code": { "min_version": "1.0.0" },
+  "components": {
+    "skills": ["feature-design-assistant", "task-execution-engine", "screenshot-feature-extractor", "skill-creation-guide"],
+    "commands": ["feature-analyzer", "feature-pipeline", "feature-dev", "screenshot-analyzer"],
+    "agents": ["code-architect", "code-explorer", "code-reviewer", "screenshot-ui-analyzer", "screenshot-interaction-analyzer", "screenshot-business-analyzer", "screenshot-synthesizer", "screenshot-reviewer", "test-generator", "test-runner"]
+  },
+  "keywords": ["development", "productivity"]
+}
+EOF
+
+# Step 4: 保留 .claude 目录用于项目自用
+# .claude/CLAUDE.md 等文件保持不变
+
+# Step 5: 更新 README.md 添加安装说明
+```
+
+### 7.2 保持向后兼容
+
+为了同时支持官方安装和 `hca` CLI 安装：
+
+```
+happy-coding-agent/
+│
+├── .claude-plugin/          # 官方插件格式
+│   └── plugin.json
+│
+├── skills/                  # 官方位置 (主)
+├── commands/                # 官方位置 (主)
+├── agents/                  # 官方位置 (主)
+│
+├── .claude/                 # 项目开发配置
+│   ├── CLAUDE.md
+│   └── .hca/                # hca CLI 元数据
+│
+└── cli/                     # hca CLI 工具 (可选安装方式)
+```
+
+## 八、发布到 Marketplace
+
+### 8.1 发布流程
+
+```bash
+# 1. 确保 plugin.json 完整
+# 2. 添加 marketplace.json (可选，用于更好的展示)
+# 3. 创建 GitHub Release
+
+# 4. 提交到官方目录 (需审核)
+# 访问: https://github.com/anthropics/claude-plugins-directory
+# 提交 PR 添加你的插件
+
+# 5. 或创建自己的 Marketplace
+# 创建一个 GitHub 仓库作为 Marketplace
+# 结构:
+# my-marketplace/
+# ├── index.json
+# └── plugins/
+#     └── happy-coding-agent/
+#         └── plugin.json
+```
+
+### 8.2 Marketplace 索引文件
 
 ```json
-// .claude/agents/_index.json
 {
-  "version": "1.0",
-  "categories": {
-    "code": {
-      "name": "Code Analysis",
-      "description": "Agents for analyzing and architecting code",
-      "agents": [
-        {
-          "file": "code/code-architect.md",
-          "name": "code-architect",
-          "summary": "Designs feature architectures"
-        }
-      ]
+  "name": "notedit-plugins",
+  "description": "Notedit's Claude Code Plugin Collection",
+  "plugins": [
+    {
+      "name": "happy-coding-agent",
+      "version": "1.0.0",
+      "source": "https://github.com/notedit/happy-coding-agent",
+      "description": "Rapid product development workflows"
     }
-  }
+  ]
 }
 ```
 
-## 五、组件分类体系
+## 九、CLI 工具定位调整
 
-### 5.1 Agents 分类
+### 9.1 hca CLI 的新定位
 
-```
-agents/
-├── code/               # 代码分析类
-│   ├── architect      # 架构设计
-│   ├── explorer       # 代码探索
-│   └── reviewer       # 代码审查
-│
-├── screenshot/         # 截图分析类 (多代理流水线)
-│   ├── ui-analyzer           # UI 分析
-│   ├── interaction-analyzer  # 交互分析
-│   ├── business-analyzer     # 业务分析
-│   ├── synthesizer           # 综合整理
-│   └── reviewer              # 质量审查
-│
-├── test/               # 测试类
-│   ├── generator      # 测试生成
-│   └── runner         # 测试执行
-│
-└── workflow/           # [未来] 工作流类
-    ├── planner        # 任务规划
-    └── executor       # 任务执行
-```
+由于 Claude Code 有官方安装机制，`hca` CLI 工具调整为：
 
-### 5.2 Commands 分类
+| 功能 | 官方方式 | hca CLI |
+|------|----------|---------|
+| 安装插件 | `/plugin install` | 备用方式 |
+| 更新插件 | `/plugin update` | 备用方式 |
+| 验证插件 | - | `hca validate` (开发工具) |
+| 打包插件 | - | `hca package` (开发工具) |
+| 查看状态 | `/plugin list` | `hca status` |
 
-```
-commands/
-├── feature-*          # 功能开发系列
-│   ├── feature-analyzer     # 需求分析
-│   ├── feature-dev          # 引导开发
-│   └── feature-pipeline     # 任务执行
-│
-├── screenshot-*       # 截图分析系列
-│   └── screenshot-analyzer  # 截图特征提取
-│
-└── [future]/          # 未来扩展
-    ├── refactor-*     # 重构系列
-    ├── doc-*          # 文档系列
-    └── test-*         # 测试系列
-```
-
-### 5.3 Skills 分类
-
-```
-skills/
-├── design/            # 设计类
-│   └── feature-design-assistant/
-│
-├── execution/         # 执行类
-│   └── task-execution-engine/
-│
-├── analysis/          # 分析类
-│   └── screenshot-feature-extractor/
-│
-└── meta/              # 元技能类
-    └── skill-creation-guide/
-```
-
-## 六、CLI 命令设计
-
-### 6.1 命令概览
+### 9.2 hca CLI 专注开发者工具
 
 ```bash
-hca <command> [options]
+# 插件开发命令
+hca init           # 创建新插件项目
+hca validate       # 验证插件结构
+hca package        # 打包发布
+hca test           # 测试插件
 
-Commands:
-  init      Initialize .claude in current project
-  update    Update deployed configurations
-  status    Show deployment status
-  list      List available components
-  package   Package plugin for distribution
-  validate  Validate plugin structure
-  publish   Publish to registry (future)
-
-Global Options:
-  -v, --verbose    Enable verbose output
-  --version        Show version
-  --help           Show help
+# 辅助安装 (当 /plugin 不可用时)
+hca install        # 手动部署到项目
 ```
 
-### 6.2 命令详细设计
+## 十、使用指南
 
-#### `hca init`
-```bash
-hca init [options]
-
-Options:
-  --select           Interactive component selection
-  --components       Comma-separated component list
-  --mode             Deployment mode: overwrite|merge|backup
-  --source           Custom source repository
-  --branch           Source branch (default: main)
-
-Examples:
-  hca init                           # Deploy all components
-  hca init --select                  # Interactive selection
-  hca init --components agents,skills
-  hca init --mode merge              # Preserve user additions
-```
-
-#### `hca list`
-```bash
-hca list [type] [options]
-
-Arguments:
-  type               agents|commands|skills|all (default: all)
-
-Options:
-  --remote           List from remote repository
-  --json             Output as JSON
-  --details          Show detailed information
-
-Examples:
-  hca list                           # List all local components
-  hca list agents --details          # List agents with descriptions
-  hca list --remote                  # List from source repo
-```
-
-#### `hca validate`
-```bash
-hca validate [path] [options]
-
-Arguments:
-  path               Path to validate (default: current directory)
-
-Options:
-  --fix              Auto-fix issues where possible
-  --strict           Strict validation mode
-  --report           Generate validation report
-
-Examples:
-  hca validate                       # Validate current project
-  hca validate .claude/skills/       # Validate skills only
-  hca validate --fix                 # Fix common issues
-```
-
-#### `hca package`
-```bash
-hca package [options]
-
-Options:
-  --output           Output directory
-  --format           Package format: zip|tar|skill
-  --include          Components to include
-  --exclude          Components to exclude
-
-Examples:
-  hca package                        # Package all to ./dist
-  hca package --format skill         # Create .skill files
-  hca package --include skills       # Package skills only
-```
-
-## 七、验证规则
-
-### 7.1 结构验证
-
-| 规则 | 级别 | 描述 |
-|------|------|------|
-| V001 | ERROR | `SKILL.md` 必须存在于每个 skill 目录 |
-| V002 | ERROR | YAML frontmatter 必须包含 `name` 和 `description` |
-| V003 | WARN | Agent/Command 文件名应使用 kebab-case |
-| V004 | WARN | Skill 目录名应与 `name` 字段一致 |
-| V005 | INFO | 建议添加 `_index.json` 索引文件 |
-
-### 7.2 内容验证
-
-| 规则 | 级别 | 描述 |
-|------|------|------|
-| C001 | ERROR | Description 不能为空 |
-| C002 | WARN | Description 应包含使用场景 |
-| C003 | WARN | SKILL.md 不应超过 500 行 |
-| C004 | INFO | 建议包含示例用法 |
-| C005 | INFO | 脚本应有执行权限 |
-
-### 7.3 依赖验证
-
-| 规则 | 级别 | 描述 |
-|------|------|------|
-| D001 | ERROR | 引用的文件必须存在 |
-| D002 | WARN | 避免循环引用 |
-| D003 | INFO | 外部依赖应在 manifest 中声明 |
-
-## 八、最佳实践
-
-### 8.1 命名规范
-
-```
-# 文件和目录
-kebab-case.md           # 文件名
-kebab-case/             # 目录名
-
-# YAML 字段
-name: kebab-case        # 标识符
-description: "..."       # 句子格式，首字母大写
-
-# 变量
-$ARGUMENTS              # 大写下划线
-```
-
-### 8.2 文档编写
-
-```markdown
-# 标题层级
-# H1 - 仅用于文档标题
-## H2 - 主要章节
-### H3 - 子章节
-#### H4 - 细节段落
-
-# 列表
-- 使用无序列表描述并列项
-1. 使用有序列表描述步骤
-
-# 代码
-`inline code` 用于短代码
-```language
-code block 用于长代码
-```
-
-### 8.3 渐进式披露
-
-```
-Level 1: Metadata (始终加载)
-├── name
-└── description (~100 words)
-
-Level 2: SKILL.md Body (触发时加载)
-└── Main content (<500 lines)
-
-Level 3: Resources (按需加载)
-├── references/    # Claude 判断需要时读取
-├── scripts/       # 执行时加载
-└── assets/        # 输出时使用
-```
-
-### 8.4 测试策略
-
-```python
-# tests/test_agents.py
-def test_agent_frontmatter():
-    """Validate all agent files have required frontmatter."""
-
-def test_agent_tools_valid():
-    """Validate all declared tools are recognized."""
-
-# tests/test_skills.py
-def test_skill_structure():
-    """Validate skill directory structure."""
-
-def test_skill_references_exist():
-    """Validate all referenced files exist."""
-```
-
-## 九、迁移计划
-
-### 9.1 从当前结构迁移
+### 10.1 用户安装和使用
 
 ```bash
-# Phase 1: 创建分类目录结构
-mkdir -p .claude/agents/{code,screenshot,test}
-mkdir -p docs scripts
+# 1. 安装插件
+/plugin install https://github.com/notedit/happy-coding-agent
 
-# Phase 2: 移动并重命名代理文件
-mv .claude/agents/code-*.md .claude/agents/code/
-mv .claude/agents/screenshot-*.md .claude/agents/screenshot/
-mv .claude/agents/test-*.md .claude/agents/test/
+# 2. 使用斜杠命令
+/feature-analyzer 实现用户登录功能
+/feature-pipeline docs/login-design.md
+/screenshot-analyzer ./screenshots/app.png
 
-# Phase 3: 创建索引文件
-# 生成 _index.json
+# 3. Skills 自动触发
+# 对话中请求功能设计时，Claude 会自动调用相关 Skill
 
-# Phase 4: 添加 manifest.json
-
-# Phase 5: 验证和测试
-hca validate --strict
+# 4. Agents 自动调度
+# Task 工具会根据任务类型自动选择合适的 Agent
 ```
 
-### 9.2 兼容性考虑
+### 10.2 团队项目配置
 
-| 版本 | 变更 | 兼容性 |
-|------|------|--------|
-| 1.x | 当前结构 | 基准 |
-| 2.0 | 分类目录 | 向后兼容 (flat fallback) |
-| 2.1 | manifest.json | 向后兼容 (可选) |
-| 3.0 | 强制分类 | 需要迁移 |
+```bash
+# 1. 项目根目录添加 .claude/settings.json
+{
+  "plugins": {
+    "sources": [
+      { "type": "github", "url": "https://github.com/notedit/happy-coding-agent" }
+    ]
+  }
+}
 
-## 十、未来扩展
+# 2. 提交到版本控制
+git add .claude/settings.json
+git commit -m "Add Claude Code plugin configuration"
 
-### 10.1 插件注册表
-
-```yaml
-# 未来支持插件发布到中央注册表
-hca publish
-hca search "code review"
-hca install notedit/happy-coding-agent
-```
-
-### 10.2 插件组合
-
-```yaml
-# 支持依赖其他插件
-dependencies:
-  plugins:
-    - name: "base-tools"
-      version: "^1.0"
-```
-
-### 10.3 钩子系统
-
-```yaml
-# 支持生命周期钩子
-hooks:
-  pre-install: "scripts/check-deps.sh"
-  post-install: "scripts/setup.sh"
-  pre-command: "scripts/validate-context.sh"
+# 3. 团队成员克隆后自动安装
 ```
 
 ## 十一、总结
 
-本设计方案提供了：
+### 关键变更
 
-1. **清晰的目录结构** - 分层组织，职责明确
-2. **标准化的文件规范** - 统一的格式和元数据
-3. **完整的 CLI 工具** - 部署、验证、打包一体化
-4. **渐进式迁移路径** - 保持向后兼容
-5. **未来扩展能力** - 注册表、组合、钩子
+1. **目录结构**: 组件目录从 `.claude/` 移到根目录
+2. **元数据**: 使用 `.claude-plugin/plugin.json` 替代自定义格式
+3. **安装方式**: 使用官方 `/plugin install` 命令
+4. **分发渠道**: 支持 GitHub、Marketplace、本地路径
+5. **CLI 定位**: `hca` 专注开发者工具，非必需
 
-通过遵循此方案，项目将具备：
-- 更好的可维护性
-- 更清晰的组件发现
-- 更可靠的质量保证
-- 更便捷的分发部署
+### 优势
+
+- 符合 Claude Code 官方规范
+- 支持官方安装命令
+- 可发布到 Marketplace
+- 团队可通过 settings.json 自动分发
+- 保持与 hca CLI 的兼容性
