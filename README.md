@@ -95,13 +95,27 @@ cd your-project && hca init
 
 ### Agents
 
+#### Code Analysis
 | Agent | Description |
 |-------|-------------|
-| `code-explorer` | Analyze codebase architecture |
-| `code-architect` | Design feature implementations |
-| `code-reviewer` | Review code for issues |
-| `test-generator` | Generate test cases |
-| `test-runner` | Execute and fix tests |
+| `code-explorer` | Analyze codebase by tracing execution paths and mapping architecture |
+| `code-architect` | Design feature architectures based on existing patterns |
+| `code-reviewer` | Review code for bugs, security vulnerabilities, and quality issues |
+
+#### Screenshot Analysis (Multi-Agent Pipeline)
+| Agent | Description |
+|-------|-------------|
+| `screenshot-ui-analyzer` | Analyze visual components, layout structure, and design patterns |
+| `screenshot-interaction-analyzer` | Analyze user interaction flows and state transitions |
+| `screenshot-business-analyzer` | Extract business logic and data entities |
+| `screenshot-synthesizer` | Synthesize analysis results into unified feature list |
+| `screenshot-reviewer` | Review task lists for completeness and quality |
+
+#### Testing
+| Agent | Description |
+|-------|-------------|
+| `test-generator` | Generate comprehensive test cases based on existing patterns |
+| `test-runner` | Execute tests, diagnose failures, and provide fixes |
 
 ## Project Structure
 

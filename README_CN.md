@@ -95,13 +95,27 @@ cd your-project && hca init
 
 ### Agents
 
-| Agent | Description |
-|-------|-------------|
-| `code-explorer` | Analyze codebase architecture |
-| `code-architect` | Design feature implementations |
-| `code-reviewer` | Review code for issues |
-| `test-generator` | Generate test cases |
-| `test-runner` | Execute and fix tests |
+#### 代码分析
+| Agent | 描述 |
+|-------|------|
+| `code-explorer` | 通过追踪执行路径和映射架构来分析代码库 |
+| `code-architect` | 基于现有模式设计功能架构 |
+| `code-reviewer` | 审查代码中的 bug、安全漏洞和质量问题 |
+
+#### 截图分析（多 Agent 流水线）
+| Agent | 描述 |
+|-------|------|
+| `screenshot-ui-analyzer` | 分析视觉组件、布局结构和设计模式 |
+| `screenshot-interaction-analyzer` | 分析用户交互流程和状态转换 |
+| `screenshot-business-analyzer` | 提取业务逻辑和数据实体 |
+| `screenshot-synthesizer` | 将分析结果综合为统一的功能列表 |
+| `screenshot-reviewer` | 审查任务列表的完整性和质量 |
+
+#### 测试
+| Agent | 描述 |
+|-------|------|
+| `test-generator` | 基于现有模式生成全面的测试用例 |
+| `test-runner` | 执行测试、诊断失败并提供修复方案 |
 
 ## Project Structure
 
