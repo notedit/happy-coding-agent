@@ -36,6 +36,15 @@ hca init
 | `/screenshot-analyzer` | Analyze product screenshots to extract features and generate task lists |
 | `/feature-dev` | Guided feature development with codebase understanding and architecture focus |
 
+### Git Commands
+
+| Command | Description |
+|---------|-------------|
+| `/git:commit` | Commit changes with auto-generated semantic commit message (Conventional Commits) |
+| `/git:pr` | Complete workflow: commit, push, and create Pull Request |
+| `/git:branch` | Create a new branch with conventional naming (supports Chinese input) |
+| `/git:changes` | Describe uncommitted changes in human-readable Chinese format |
+
 ## Agents
 
 ### Code Analysis Agents
@@ -95,7 +104,12 @@ cli/                                     # CLI tool (hca command)
 │   ├── feature-analyzer.md
 │   ├── feature-pipeline.md
 │   ├── screenshot-analyzer.md
-│   └── feature-dev.md
+│   ├── feature-dev.md
+│   └── git/                             # Git operations
+│       ├── commit.md
+│       ├── pr.md
+│       ├── branch.md
+│       └── changes.md
 └── skills/                              # Reusable skills
     ├── feature-design-assistant/
     ├── task-execution-engine/
