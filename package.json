@@ -1,0 +1,123 @@
+{
+  "name": "happy-skills",
+  "version": "1.0.0",
+  "description": "用自然语言描述需求，自动生成设计文档并逐步实现代码。把'想法→设计→代码→提交'的完整开发流程自动化。",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/notedit/happy-skills.git"
+  },
+  "keywords": [
+    "skills",
+    "agent-skills",
+    "claude-code",
+    "feature-development",
+    "git-workflow",
+    "ai-agent"
+  ],
+  "author": "notedit <notedit@gmail.com>",
+  "license": "MIT",
+  "skills": {
+    "skills": [
+      {
+        "name": "feature-dev",
+        "path": "./skills/feature-dev"
+      },
+      {
+        "name": "feature-analyzer",
+        "path": "./skills/feature-analyzer"
+      },
+      {
+        "name": "feature-pipeline",
+        "path": "./skills/feature-pipeline"
+      },
+      {
+        "name": "screenshot-analyzer",
+        "path": "./skills/screenshot-analyzer"
+      },
+      {
+        "name": "skill-creation-guide",
+        "path": "./skills/skill-creation-guide"
+      },
+      {
+        "name": "tts-skill",
+        "path": "./skills/tts-skill"
+      }
+    ],
+    "commands": [
+      {
+        "name": "git:branch",
+        "path": "./commands/git/branch.md"
+      },
+      {
+        "name": "git:changes",
+        "path": "./commands/git/changes.md"
+      },
+      {
+        "name": "git:commit",
+        "path": "./commands/git/commit.md"
+      },
+      {
+        "name": "git:pr",
+        "path": "./commands/git/pr.md"
+      },
+      {
+        "name": "git:worktree-add",
+        "path": "./commands/git/worktree-add.md"
+      },
+      {
+        "name": "git:worktree-list",
+        "path": "./commands/git/worktree-list.md"
+      },
+      {
+        "name": "git:worktree-merge",
+        "path": "./commands/git/worktree-merge.md"
+      },
+      {
+        "name": "git:worktree-remove",
+        "path": "./commands/git/worktree-remove.md"
+      }
+    ],
+    "agents": [
+      {
+        "name": "code-architect",
+        "path": "./agents/code-architect.md"
+      },
+      {
+        "name": "code-explorer",
+        "path": "./agents/code-explorer.md"
+      },
+      {
+        "name": "code-reviewer",
+        "path": "./agents/code-reviewer.md"
+      },
+      {
+        "name": "screenshot-business-analyzer",
+        "path": "./agents/screenshot-business-analyzer.md"
+      },
+      {
+        "name": "screenshot-interaction-analyzer",
+        "path": "./agents/screenshot-interaction-analyzer.md"
+      },
+      {
+        "name": "screenshot-reviewer",
+        "path": "./agents/screenshot-reviewer.md"
+      },
+      {
+        "name": "screenshot-synthesizer",
+        "path": "./agents/screenshot-synthesizer.md"
+      },
+      {
+        "name": "screenshot-ui-analyzer",
+        "path": "./agents/screenshot-ui-analyzer.md"
+      },
+      {
+        "name": "test-generator",
+        "path": "./agents/test-generator.md"
+      },
+      {
+        "name": "test-runner",
+        "path": "./agents/test-runner.md"
+      }
+    ]
+  }
+}

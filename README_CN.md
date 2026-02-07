@@ -6,31 +6,29 @@
 
 ## 安装
 
-### 方式一：使用 npx skills add（推荐）
+### 使用 npx skills（推荐）
 
 ```bash
-# 安装到当前项目
+# 安装此包中的所有 skills
 npx skills add notedit/happy-skills
 
-# 或全局安装
+# 仅安装特定的 skills
+npx skills add notedit/happy-skills --skills feature-dev,feature-analyzer
+
+# 全局安装（在所有项目中可用）
 npx skills add notedit/happy-skills -g
 ```
 
-### 方式二：使用 Claude Code 插件系统
-
-```bash
-# 第一步：添加 marketplace
-/plugin marketplace add notedit/happy-skills
-
-# 第二步：安装插件
-/plugin install ha@happy-skills
-```
+> **注意**: `npx skills` 需要 [skills CLI](https://www.npmjs.com/package/skills)。如果尚未安装，请运行 `npm install -g skills`。
 
 ### 验证安装
 
 ```bash
 # 测试 skill
 /feature-dev 添加一个简单功能
+
+# 或者测试其他 skill
+/feature-analyzer 设计用户认证系统
 ```
 
 ## Usage
@@ -133,7 +131,7 @@ npx skills add notedit/happy-skills -g
 
 ```
 happy-skills/
-├── .claude-plugin/plugin.json   # Plugin manifest
+├── package.json                 # NPM 包配置 & skills 配置
 ├── commands/                    # Slash commands
 │   └── git/                     # Git commands
 ├── skills/                      # Skills

@@ -47,7 +47,7 @@
 
 ```
 happy-skills/
-├── .claude-plugin/plugin.json   # Plugin manifest
+├── package.json                 # NPM package manifest & skills configuration
 ├── commands/                    # Slash commands
 │   └── git/                     # Git commands (8)
 ├── skills/                      # Skills (direct invocation)

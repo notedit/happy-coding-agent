@@ -6,31 +6,29 @@
 
 ## Installation
 
-### Option 1: Using npx skills add (Recommended)
+### Using npx skills (Recommended)
 
 ```bash
-# Install to current project
+# Install all skills from this package
 npx skills add notedit/happy-skills
 
-# Or install globally
+# Install specific skills only
+npx skills add notedit/happy-skills --skills feature-dev,feature-analyzer
+
+# Install globally (available in all projects)
 npx skills add notedit/happy-skills -g
 ```
 
-### Option 2: Using Claude Code Plugin System
-
-```bash
-# Step 1: Add the marketplace
-/plugin marketplace add notedit/happy-skills
-
-# Step 2: Install the plugin
-/plugin install ha@happy-skills
-```
+> **Note**: `npx skills` requires the [skills CLI](https://www.npmjs.com/package/skills). Install it with `npm install -g skills` if not already available.
 
 ### Verify Installation
 
 ```bash
 # Test a skill
 /feature-dev add a simple feature
+
+# Or test another skill
+/feature-analyzer design a user authentication system
 ```
 
 ## Usage
@@ -133,7 +131,7 @@ npx skills add notedit/happy-skills -g
 
 ```
 happy-skills/
-├── .claude-plugin/plugin.json   # Plugin manifest
+├── package.json                 # NPM package manifest & skills configuration
 ├── commands/                    # Slash commands
 │   └── git/                     # Git commands
 ├── skills/                      # Skills
